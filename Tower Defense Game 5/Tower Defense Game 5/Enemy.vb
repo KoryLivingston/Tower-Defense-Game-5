@@ -43,8 +43,10 @@
         If Enemygraphic.Bounds.IntersectsWith(Form1.PicBase.Bounds) Then
 
             Enemygraphic.Top -= 1000
-            Form1.Lives -= 1
-            Form1.EnemiesKilledInWave += 1
+            With Form1
+                .Lives -= 1
+                .EnemiesKilledInWave += 1
+            End With
         End If
 
 

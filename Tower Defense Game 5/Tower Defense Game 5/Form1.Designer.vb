@@ -39,6 +39,8 @@ Partial Class Form1
         Me.QuitButton = New System.Windows.Forms.Button()
         Me.RetryButton = New System.Windows.Forms.Button()
         Me.LblGameOver = New System.Windows.Forms.Label()
+        Me.WaveCompletionUI = New System.Windows.Forms.Timer(Me.components)
+        Me.LblWaveCompleted = New System.Windows.Forms.Label()
         CType(Me.Path1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EnemyBase, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -196,12 +198,29 @@ Partial Class Form1
         Me.LblGameOver.Text = "GAMEOVER"
         Me.LblGameOver.Visible = False
         '
+        'WaveCompletionUI
+        '
+        Me.WaveCompletionUI.Interval = 2000
+        '
+        'LblWaveCompleted
+        '
+        Me.LblWaveCompleted.AutoSize = True
+        Me.LblWaveCompleted.BackColor = System.Drawing.Color.SaddleBrown
+        Me.LblWaveCompleted.Font = New System.Drawing.Font("Agency FB", 72.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblWaveCompleted.Location = New System.Drawing.Point(147, 106)
+        Me.LblWaveCompleted.Name = "LblWaveCompleted"
+        Me.LblWaveCompleted.Size = New System.Drawing.Size(599, 115)
+        Me.LblWaveCompleted.TabIndex = 18
+        Me.LblWaveCompleted.Text = "WAVECOMPLETED"
+        Me.LblWaveCompleted.Visible = False
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.ForestGreen
         Me.ClientSize = New System.Drawing.Size(884, 411)
+        Me.Controls.Add(Me.LblWaveCompleted)
         Me.Controls.Add(Me.LblGameOver)
         Me.Controls.Add(Me.RetryButton)
         Me.Controls.Add(Me.QuitButton)
@@ -246,4 +265,6 @@ Partial Class Form1
     Friend WithEvents QuitButton As Button
     Friend WithEvents RetryButton As Button
     Friend WithEvents LblGameOver As Label
+    Friend WithEvents WaveCompletionUI As Timer
+    Friend WithEvents LblWaveCompleted As Label
 End Class
