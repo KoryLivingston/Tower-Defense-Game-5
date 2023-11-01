@@ -1,21 +1,23 @@
-﻿Imports System.Reflection
+﻿
 
 Public Class Form1
 
     Public TotalEnemiesInWave As Integer
     Public EnemiesKilledInWave As Integer
-    Public WaveIncremented As Boolean
 
     Public currentEnemies As New List(Of Enemy)
 
     Public Goblins(-1) As Enemy
     Public PicGoblins(-1) As PictureBox
-
     Public Demons(-1) As Enemy
     Public PicDemons(-1) As PictureBox
 
+    Public TowerPlacing As Boolean
 
-    Public Lives As Integer = 50
+    Public PicTower1 As PictureBox
+    Public Tower1 As Tower = New Tower(Nothing, 20)
+
+    Public Lives As Integer = 10
     Public Coins As Integer = 50
     Public Wave As Integer = 1
 
@@ -23,16 +25,21 @@ Public Class Form1
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
 
-        SpawnGoblins(5)
+        SpawnGoblins(3)
 
         StartButton.Hide()
         QuitButton.Hide()
+
+        TurretPanel.Show()
+        TowerBuy1.Show()
+        TurretPanel.BackColor = Color.FromArgb(130, TurretPanel.BackColor)
 
         GameLogic.Enabled = True
         GameLogic.Start()
 
         EnemyLogic.Enabled = True
         EnemyLogic.Start()
+
 
     End Sub
 
@@ -43,9 +50,8 @@ Public Class Form1
         LblCoins.Text = "COINS " & Coins
         LblWave.Text = "WAVE " & Wave
 
-        If Not WaveIncremented AndAlso EnemiesKilledInWave = TotalEnemiesInWave Then
+        If EnemiesKilledInWave = TotalEnemiesInWave Then
             Wave += 1
-            WaveIncremented = True
             LblWaveCompleted.Show()
             LblWaveCompleted.BringToFront()
             WaveCompletionUI.Start()
@@ -75,6 +81,7 @@ Public Class Form1
 
 
     End Sub
+
 
     Public Sub SpawnGoblins(NumberOfGoblins)
 
@@ -132,60 +139,69 @@ Public Class Form1
 
     Public Sub WaveSpawn()
 
-        If Wave = 2 Then
+
+        Do While Wave >= 2 And Wave <= 8
 
             InitializeGame()
-            SpawnGoblins(5)
+            SpawnGoblins(3 + Wave)
 
             For counter = 0 To TotalEnemiesInWave - 1
-                If Wave <> 1 Then
-                    currentEnemies(counter).Enemygraphic.Location = New Point(EnemyBase.Location.X - 100 - (counter * 50), 275)
-                End If
+                currentEnemies(counter).Enemygraphic.Location = New Point(EnemyBase.Location.X - 100 - (counter * 50), 275)
             Next
 
-        End If
+            Exit Do
+
+        Loop
+
+    End Sub
 
 
+    Private Sub TowerBuy1_Click(sender As Object, e As EventArgs) Handles TowerBuy1.Click
 
-        If Wave = 3 Then
+        If Coins >= Tower1.Price And TowerPlacing = False Then
 
-            InitializeGame()
-            SpawnGoblins(10)
-
-            For counter = 0 To TotalEnemiesInWave - 1
-                If Wave <> 1 Then
-                    currentEnemies(counter).Enemygraphic.Location = New Point(EnemyBase.Location.X - 100 - (counter * 50), 275)
-                End If
-            Next
-
-        End If
-
-        If Wave = 4 Then
-            InitializeGame()
-            SpawnGoblins(15)
-
-            For counter = 0 To TotalEnemiesInWave - 1
-                If Wave <> 1 Then
-                    currentEnemies(counter).Enemygraphic.Location = New Point(EnemyBase.Location.X - 100 - (counter * 50), 275)
-                End If
-            Next
-
-        End If
-
-
-        If Wave = 5 Then
-            InitializeGame()
-            SpawnGoblins(20)
-
-            For counter = 0 To TotalEnemiesInWave - 1
-                If Wave <> 1 Then
-                    currentEnemies(counter).Enemygraphic.Location = New Point(EnemyBase.Location.X - 100 - (counter * 50), 275)
-                End If
-            Next
+            TowerPlacing = True
 
         End If
 
     End Sub
+
+    Private Sub Form1_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
+
+        If TowerPlacing = True And Tower1.TowerGraphic IsNot Nothing Then
+
+            Tower1.TowerGraphic.Location = PointToClient(Cursor.Position)
+
+        End If
+
+    End Sub
+
+
+    Private Sub Form1_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick
+
+
+        If TowerPlacing = True Then
+
+            Dim newTower1 As New PictureBox With {
+    .Size = New Size(37, 33),
+    .BackColor = Color.CadetBlue,
+    .Name = "PicTower1",
+    .Location = PointToClient(Cursor.Position)
+                              }
+
+
+            Controls.Add(newTower1)
+            newTower1.BringToFront()
+
+            Coins -= Tower1.Price
+            TowerPlacing = False
+
+
+        End If
+
+
+    End Sub
+
 
     Public Sub InitializeGame()
 
@@ -199,7 +215,6 @@ Public Class Form1
         currentEnemies.Clear()
         TotalEnemiesInWave = 0
         EnemiesKilledInWave = 0
-        WaveIncremented = False
 
 
     End Sub
@@ -229,7 +244,7 @@ Public Class Form1
 
     Private Sub RetryButton_Click(sender As Object, e As EventArgs) Handles RetryButton.Click
 
-        Lives = 50
+        Lives = 10
         Coins = 50
         Wave = 1
 
@@ -242,13 +257,9 @@ Public Class Form1
         LblGameOver.Hide()
         RetryButton.Hide()
 
-        SpawnGoblins(5)
+        SpawnGoblins(3)
 
     End Sub
-
-
-
-
 
     Private Sub QuitButton_Click(sender As Object, e As EventArgs) Handles QuitButton.Click
 

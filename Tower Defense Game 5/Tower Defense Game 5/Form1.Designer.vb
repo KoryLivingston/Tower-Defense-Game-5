@@ -41,6 +41,8 @@ Partial Class Form1
         Me.LblGameOver = New System.Windows.Forms.Label()
         Me.WaveCompletionUI = New System.Windows.Forms.Timer(Me.components)
         Me.LblWaveCompleted = New System.Windows.Forms.Label()
+        Me.TurretPanel = New System.Windows.Forms.PictureBox()
+        Me.TowerBuy1 = New System.Windows.Forms.PictureBox()
         CType(Me.Path1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EnemyBase, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -48,6 +50,8 @@ Partial Class Form1
         CType(Me.Path3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PicBase, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.TurretPanel, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.TowerBuy1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'GameLogic
@@ -191,7 +195,7 @@ Partial Class Form1
         Me.LblGameOver.AutoSize = True
         Me.LblGameOver.BackColor = System.Drawing.Color.SaddleBrown
         Me.LblGameOver.Font = New System.Drawing.Font("Agency FB", 72.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblGameOver.Location = New System.Drawing.Point(232, 79)
+        Me.LblGameOver.Location = New System.Drawing.Point(232, 54)
         Me.LblGameOver.Name = "LblGameOver"
         Me.LblGameOver.Size = New System.Drawing.Size(389, 115)
         Me.LblGameOver.TabIndex = 17
@@ -214,17 +218,39 @@ Partial Class Form1
         Me.LblWaveCompleted.Text = "WAVECOMPLETED"
         Me.LblWaveCompleted.Visible = False
         '
+        'TurretPanel
+        '
+        Me.TurretPanel.BackColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
+        Me.TurretPanel.Location = New System.Drawing.Point(493, 342)
+        Me.TurretPanel.Name = "TurretPanel"
+        Me.TurretPanel.Size = New System.Drawing.Size(364, 57)
+        Me.TurretPanel.TabIndex = 19
+        Me.TurretPanel.TabStop = False
+        Me.TurretPanel.Visible = False
+        '
+        'TowerBuy1
+        '
+        Me.TowerBuy1.BackColor = System.Drawing.Color.CadetBlue
+        Me.TowerBuy1.Location = New System.Drawing.Point(560, 352)
+        Me.TowerBuy1.Name = "TowerBuy1"
+        Me.TowerBuy1.Size = New System.Drawing.Size(41, 36)
+        Me.TowerBuy1.TabIndex = 20
+        Me.TowerBuy1.TabStop = False
+        Me.TowerBuy1.Visible = False
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.ForestGreen
         Me.ClientSize = New System.Drawing.Size(884, 411)
+        Me.Controls.Add(Me.TowerBuy1)
         Me.Controls.Add(Me.LblWaveCompleted)
         Me.Controls.Add(Me.LblGameOver)
-        Me.Controls.Add(Me.RetryButton)
-        Me.Controls.Add(Me.QuitButton)
         Me.Controls.Add(Me.StartButton)
+        Me.Controls.Add(Me.QuitButton)
+        Me.Controls.Add(Me.TurretPanel)
+        Me.Controls.Add(Me.RetryButton)
         Me.Controls.Add(Me.LblWave)
         Me.Controls.Add(Me.LblCoins)
         Me.Controls.Add(Me.LblLives)
@@ -244,6 +270,8 @@ Partial Class Form1
         CType(Me.Path3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PicBase, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.TurretPanel, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.TowerBuy1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -267,4 +295,6 @@ Partial Class Form1
     Friend WithEvents LblGameOver As Label
     Friend WithEvents WaveCompletionUI As Timer
     Friend WithEvents LblWaveCompleted As Label
+    Friend WithEvents TurretPanel As PictureBox
+    Friend WithEvents TowerBuy1 As PictureBox
 End Class
