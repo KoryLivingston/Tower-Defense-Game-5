@@ -1,0 +1,22 @@
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\bin\Debug\Tower Defence Game.exe.config
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\bin\Debug\Tower Defence Game.exe
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\bin\Debug\Tower Defence Game.pdb
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\bin\Debug\Tower Defence Game.xml
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.vbprojAssemblyReference.cache
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\obj\Debug\Tower_Defence_Game.Form1.resources
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\obj\Debug\Tower_Defence_Game.Resources.resources
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.vbproj.GenerateResource.cache
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.exe
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.xml
+C:\Users\spm18livingstonk2\source\repos\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.pdb
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\bin\Debug\Tower Defence Game.exe.config
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\bin\Debug\Tower Defence Game.exe
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\bin\Debug\Tower Defence Game.pdb
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\bin\Debug\Tower Defence Game.xml
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.vbprojAssemblyReference.cache
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\obj\Debug\Tower_Defence_Game.Form1.resources
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\obj\Debug\Tower_Defence_Game.Resources.resources
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.vbproj.GenerateResource.cache
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.exe
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.xml
+H:\N7 Computing Science\Project\Tower Defence Game\Tower Defence Game\obj\Debug\Tower Defence Game.pdb
