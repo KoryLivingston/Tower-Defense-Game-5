@@ -1,6 +1,4 @@
-﻿
-
-Public Class Form1
+﻿Public Class Form1
 
     Public TotalEnemiesInWave As Integer
     Public EnemiesKilledInWave As Integer
@@ -12,13 +10,17 @@ Public Class Form1
     Public Demons(-1) As Enemy
     Public PicDemons(-1) As PictureBox
 
+    Public WaveEnded As Boolean
     Public TowerPlacing As Boolean
 
-    Public PicTower1 As PictureBox
-    Public Tower1 As Tower = New Tower(Nothing, 20)
+    Public PicTower(-1) As PictureBox
+    Public Tower(-1) As Tower
+
+    Public TotalTowers As Integer
+    Public IntTower As Integer
 
     Public Lives As Integer = 10
-    Public Coins As Integer = 50
+    Public Coins As Integer = 10000
     Public Wave As Integer = 1
 
 
@@ -50,12 +52,13 @@ Public Class Form1
         LblCoins.Text = "COINS " & Coins
         LblWave.Text = "WAVE " & Wave
 
-        If EnemiesKilledInWave = TotalEnemiesInWave Then
-            Wave += 1
+        If WaveEnded = False And EnemiesKilledInWave = TotalEnemiesInWave Then
+
             LblWaveCompleted.Show()
             LblWaveCompleted.BringToFront()
             WaveCompletionUI.Start()
-            WaveSpawn()
+            WaveEnded = True
+
         End If
 
 
@@ -135,7 +138,23 @@ Public Class Form1
 
     End Sub
 
+    Private Sub WaveCompletionUI_Tick(sender As Object, e As EventArgs) Handles WaveCompletionUI.Tick
 
+        LblWaveCompleted.Hide()
+        WaveCompletionUI.Stop()
+        NextWaveButton.Show()
+        NextWaveButton.BringToFront()
+
+    End Sub
+
+
+    Private Sub NextWaveButton_Click(sender As Object, e As EventArgs) Handles NextWaveButton.Click
+
+        NextWaveButton.Hide()
+        Wave += 1
+        WaveSpawn()
+
+    End Sub
 
     Public Sub WaveSpawn()
 
@@ -158,9 +177,30 @@ Public Class Form1
 
     Private Sub TowerBuy1_Click(sender As Object, e As EventArgs) Handles TowerBuy1.Click
 
-        If Coins >= Tower1.Price And TowerPlacing = False Then
+
+        If Coins >= 20 And TowerPlacing = False Then
 
             TowerPlacing = True
+
+            ReDim Preserve PicTower(IntTower)
+
+
+            PicTower(IntTower) = New PictureBox With {
+            .Size = New Size(37, 33),
+            .BackColor = Color.CadetBlue,
+            .Name = "PicTower" & IntTower.ToString(),
+            .Location = New Point(-100, -100)
+            }
+
+            Controls.Add(PicTower(IntTower))
+            PicTower(IntTower).BringToFront()
+
+
+            ReDim Preserve Tower(IntTower)
+            Tower(IntTower) = New Tower(PicTower(IntTower))
+
+
+
 
         End If
 
@@ -168,39 +208,66 @@ Public Class Form1
 
     Private Sub Form1_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
 
-        If TowerPlacing = True And Tower1.TowerGraphic IsNot Nothing Then
+        If TowerPlacing = True Then
 
-            Tower1.TowerGraphic.Location = PointToClient(Cursor.Position)
+
+            TowerIndicator.Show()
+            TowerIndicator.BringToFront()
+            TowerIndicator.BackColor = Color.FromArgb(200, TowerIndicator.BackColor)
+
+            TowerIndicatorUI.Enabled = True
+            TowerIndicatorUI.Start()
+
+
 
         End If
 
     End Sub
 
+    Private Sub TowerIndicatorUI_Tick(sender As Object, e As EventArgs) Handles TowerIndicatorUI.Tick
 
-    Private Sub Form1_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick
+        Dim p As New Point(18, 16)
+
+        TowerIndicator.Location = New Point(PointToClient(Cursor.Position) - p)
+
+    End Sub
+
+
+    Private Sub TowerIndicator_Click(sender As Object, e As EventArgs) Handles TowerIndicator.Click
+
+        Dim p As New Point(18, 16)
+
 
 
         If TowerPlacing = True Then
 
-            Dim newTower1 As New PictureBox With {
-    .Size = New Size(37, 33),
-    .BackColor = Color.CadetBlue,
-    .Name = "PicTower1",
-    .Location = PointToClient(Cursor.Position)
-                              }
+
+            For Each picBox As PictureBox In Controls.OfType(Of PictureBox)
+
+                If picBox IsNot TowerIndicator AndAlso TowerIndicator.Bounds.IntersectsWith(picBox.Bounds) Then
+                    Exit Sub
+                End If
+
+            Next
 
 
-            Controls.Add(newTower1)
-            newTower1.BringToFront()
+            TowerIndicatorUI.Stop()
+            TowerIndicator.Hide()
 
-            Coins -= Tower1.Price
+            Tower(IntTower).TowerGraphic.Location = New Point(PointToClient(Cursor.Position) - p)
+            Coins -= 20
+            IntTower += 1
+            TotalTowers += 1
             TowerPlacing = False
-
 
         End If
 
 
     End Sub
+
+
+
+
 
 
     Public Sub InitializeGame()
@@ -212,20 +279,17 @@ Public Class Form1
 
         Goblins = Nothing
         PicGoblins = Nothing
+        Demons = Nothing
+        PicDemons = Nothing
         currentEnemies.Clear()
         TotalEnemiesInWave = 0
         EnemiesKilledInWave = 0
+        WaveEnded = False
 
 
     End Sub
 
 
-    Private Sub WaveCompletionUI_Tick(sender As Object, e As EventArgs) Handles WaveCompletionUI.Tick
-
-        LblWaveCompleted.Hide()
-        WaveCompletionUI.Stop()
-
-    End Sub
 
 
 
@@ -250,6 +314,16 @@ Public Class Form1
 
         InitializeGame()
 
+
+        For counter = 0 To TotalTowers - 1
+            Controls.Remove(Tower(counter).TowerGraphic)
+        Next
+
+        Tower = Nothing
+        PicTower = Nothing
+        TowerPlacing = False
+        TotalTowers = 0
+        IntTower = 0
 
         EnemyLogic.Start()
         GameLogic.Start()

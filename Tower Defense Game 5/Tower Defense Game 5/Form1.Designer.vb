@@ -43,6 +43,16 @@ Partial Class Form1
         Me.LblWaveCompleted = New System.Windows.Forms.Label()
         Me.TurretPanel = New System.Windows.Forms.PictureBox()
         Me.TowerBuy1 = New System.Windows.Forms.PictureBox()
+        Me.NextWaveButton = New System.Windows.Forms.Button()
+        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox3 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox4 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox6 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox7 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox8 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox11 = New System.Windows.Forms.PictureBox()
+        Me.TowerIndicator = New System.Windows.Forms.PictureBox()
+        Me.TowerIndicatorUI = New System.Windows.Forms.Timer(Me.components)
         CType(Me.Path1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EnemyBase, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -52,6 +62,14 @@ Partial Class Form1
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TurretPanel, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TowerBuy1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox6, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox7, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox8, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox11, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.TowerIndicator, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'GameLogic
@@ -68,6 +86,7 @@ Partial Class Form1
         Me.Path1.Size = New System.Drawing.Size(476, 104)
         Me.Path1.TabIndex = 0
         Me.Path1.TabStop = False
+        Me.Path1.Tag = "Invalid Tower Spawn"
         '
         'PictureBox5
         '
@@ -238,12 +257,98 @@ Partial Class Form1
         Me.TowerBuy1.TabStop = False
         Me.TowerBuy1.Visible = False
         '
+        'NextWaveButton
+        '
+        Me.NextWaveButton.BackColor = System.Drawing.Color.SaddleBrown
+        Me.NextWaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.NextWaveButton.Font = New System.Drawing.Font("Agency FB", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.NextWaveButton.Location = New System.Drawing.Point(15, 198)
+        Me.NextWaveButton.Name = "NextWaveButton"
+        Me.NextWaveButton.Size = New System.Drawing.Size(95, 32)
+        Me.NextWaveButton.TabIndex = 21
+        Me.NextWaveButton.Text = "NEXTWAVE"
+        Me.NextWaveButton.UseVisualStyleBackColor = False
+        Me.NextWaveButton.Visible = False
+        '
+        'PictureBox2
+        '
+        Me.PictureBox2.Location = New System.Drawing.Point(469, 320)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.PictureBox2.Size = New System.Drawing.Size(423, 95)
+        Me.PictureBox2.TabIndex = 22
+        Me.PictureBox2.TabStop = False
+        '
+        'PictureBox3
+        '
+        Me.PictureBox3.Location = New System.Drawing.Point(-3, -2)
+        Me.PictureBox3.Name = "PictureBox3"
+        Me.PictureBox3.Size = New System.Drawing.Size(201, 121)
+        Me.PictureBox3.TabIndex = 23
+        Me.PictureBox3.TabStop = False
+        '
+        'PictureBox4
+        '
+        Me.PictureBox4.Location = New System.Drawing.Point(868, -2)
+        Me.PictureBox4.Name = "PictureBox4"
+        Me.PictureBox4.Size = New System.Drawing.Size(19, 417)
+        Me.PictureBox4.TabIndex = 24
+        Me.PictureBox4.TabStop = False
+        '
+        'PictureBox6
+        '
+        Me.PictureBox6.Location = New System.Drawing.Point(197, -2)
+        Me.PictureBox6.Name = "PictureBox6"
+        Me.PictureBox6.Size = New System.Drawing.Size(675, 14)
+        Me.PictureBox6.TabIndex = 25
+        Me.PictureBox6.TabStop = False
+        '
+        'PictureBox7
+        '
+        Me.PictureBox7.Location = New System.Drawing.Point(-3, -2)
+        Me.PictureBox7.Name = "PictureBox7"
+        Me.PictureBox7.Size = New System.Drawing.Size(12, 417)
+        Me.PictureBox7.TabIndex = 26
+        Me.PictureBox7.TabStop = False
+        '
+        'PictureBox8
+        '
+        Me.PictureBox8.Location = New System.Drawing.Point(-3, 399)
+        Me.PictureBox8.Name = "PictureBox8"
+        Me.PictureBox8.Size = New System.Drawing.Size(479, 12)
+        Me.PictureBox8.TabIndex = 27
+        Me.PictureBox8.TabStop = False
+        '
+        'PictureBox11
+        '
+        Me.PictureBox11.Location = New System.Drawing.Point(868, 184)
+        Me.PictureBox11.Name = "PictureBox11"
+        Me.PictureBox11.Size = New System.Drawing.Size(19, 156)
+        Me.PictureBox11.TabIndex = 30
+        Me.PictureBox11.TabStop = False
+        '
+        'TowerIndicator
+        '
+        Me.TowerIndicator.BackColor = System.Drawing.Color.CadetBlue
+        Me.TowerIndicator.Location = New System.Drawing.Point(820, 281)
+        Me.TowerIndicator.Name = "TowerIndicator"
+        Me.TowerIndicator.Size = New System.Drawing.Size(37, 33)
+        Me.TowerIndicator.TabIndex = 35
+        Me.TowerIndicator.TabStop = False
+        Me.TowerIndicator.Visible = False
+        '
+        'TowerIndicatorUI
+        '
+        Me.TowerIndicatorUI.Interval = 1
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.ForestGreen
         Me.ClientSize = New System.Drawing.Size(884, 411)
+        Me.Controls.Add(Me.TowerIndicator)
+        Me.Controls.Add(Me.PictureBox8)
+        Me.Controls.Add(Me.NextWaveButton)
         Me.Controls.Add(Me.TowerBuy1)
         Me.Controls.Add(Me.LblWaveCompleted)
         Me.Controls.Add(Me.LblGameOver)
@@ -261,6 +366,12 @@ Partial Class Form1
         Me.Controls.Add(Me.Path1)
         Me.Controls.Add(Me.Path2)
         Me.Controls.Add(Me.Path3)
+        Me.Controls.Add(Me.PictureBox3)
+        Me.Controls.Add(Me.PictureBox2)
+        Me.Controls.Add(Me.PictureBox4)
+        Me.Controls.Add(Me.PictureBox6)
+        Me.Controls.Add(Me.PictureBox7)
+        Me.Controls.Add(Me.PictureBox11)
         Me.Name = "Form1"
         Me.Text = "Form1"
         CType(Me.Path1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -272,6 +383,14 @@ Partial Class Form1
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TurretPanel, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TowerBuy1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox6, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox7, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox8, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox11, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.TowerIndicator, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -297,4 +416,14 @@ Partial Class Form1
     Friend WithEvents LblWaveCompleted As Label
     Friend WithEvents TurretPanel As PictureBox
     Friend WithEvents TowerBuy1 As PictureBox
+    Friend WithEvents NextWaveButton As Button
+    Friend WithEvents PictureBox2 As PictureBox
+    Friend WithEvents PictureBox3 As PictureBox
+    Friend WithEvents PictureBox4 As PictureBox
+    Friend WithEvents PictureBox6 As PictureBox
+    Friend WithEvents PictureBox7 As PictureBox
+    Friend WithEvents PictureBox8 As PictureBox
+    Friend WithEvents PictureBox11 As PictureBox
+    Friend WithEvents TowerIndicator As PictureBox
+    Friend WithEvents TowerIndicatorUI As Timer
 End Class
