@@ -5,10 +5,12 @@
     Public MovementSpeed As Integer
     Public Health As Integer
     Public CoinsDropped As Integer
+    Public EnemyLocation As Point
 
     Public Sub New(Graphic As PictureBox, MovementSpeed As Integer, Health As Integer, CoinsDropped As Integer)
 
         Enemygraphic = Graphic
+        EnemyLocation = Nothing
 
         With Me
 
@@ -51,5 +53,7 @@
 
 
     End Sub
+
+
 
 End Class
