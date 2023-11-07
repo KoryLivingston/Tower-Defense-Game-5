@@ -1,17 +1,19 @@
 ﻿Public Class Tower
 
     Public TowerGraphic As PictureBox
-    Public Price As Integer
+    Public TowerLocation As Point
+    Public Range As Integer
 
 
 
-    Public Sub New(Graphic As PictureBox, Price As Integer)
+    Public Sub New(Graphic As PictureBox, Range As Integer)
 
         TowerGraphic = Graphic
+        TowerLocation = Nothing
 
         With Me
 
-            .Price = Price
+            .Range = Range
 
         End With
 
