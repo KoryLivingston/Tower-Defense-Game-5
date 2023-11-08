@@ -1,10 +1,12 @@
-﻿Public Class Form1
+﻿Imports System.Reflection
+
+Public Class Form1
 
     Public TotalEnemiesInWave As Integer
     Public EnemiesKilledInWave As Integer
 
     Public currentEnemies As New List(Of Enemy)
-    Public EnemyLocations(-1) As Point
+
 
     Public Goblins(-1) As Enemy
     Public PicGoblins(-1) As PictureBox
@@ -13,15 +15,18 @@
 
     Public WaveEnded As Boolean
     Public TowerPlacing As Boolean
+    Public TowerShooting As Boolean
 
     Public PicTower(-1) As PictureBox
     Public Tower(-1) As Tower
+    Public TowerShots(-1) As PictureBox
 
-    Public TowersAvailable As New List(Of Tower)
-    Public totalTowers As Integer
-    Public IntTower As Integer
 
-    Public Lives As Integer = 1
+    Public CurrentTowers As New List(Of Tower)
+    Public TowerCount As Integer
+
+
+    Public Lives As Integer = 10
     Public Coins As Integer = 50
     Public Wave As Integer = 1
 
@@ -80,13 +85,42 @@
 
             currentEnemies(counter).MoveEnemy()
             currentEnemies(counter).EnemyReachedBase()
-            EnemyLocations(counter) = currentEnemies(counter).EnemyLocation
+            currentEnemies(counter).EnemyLocation = currentEnemies(counter).Enemygraphic.Location
+
+
 
         Next
 
 
 
     End Sub
+
+
+    Private Sub TowerLogic_Tick(sender As Object, e As EventArgs) Handles TowerLogic.Tick
+
+        For Each PlayerTower As Tower In CurrentTowers
+            For Each Enemy As Enemy In currentEnemies
+                If PlayerTower.TowerLocation.X - Enemy.EnemyLocation.X <= PlayerTower.Range And PlayerTower.TowerLocation.Y - Enemy.EnemyLocation.Y <= PlayerTower.Range Then
+
+
+                    Enemy.Health -= PlayerTower.damage
+
+                    If Enemy.Health <= 0 Then
+                        Enemy.Enemygraphic.Top -= 1000
+                        EnemiesKilledInWave += 1
+                        If WaveEnded = False Then
+                            Coins += Enemy.CoinsDropped
+                        End If
+
+                    End If
+
+                    Continue For
+                End If
+            Next
+        Next
+
+    End Sub
+
 
 
     Public Sub SpawnGoblins(NumberOfGoblins)
@@ -105,7 +139,7 @@
 
             Controls.Add(PicGoblins(counter))
             PicGoblins(counter).BringToFront()
-            ReDim Preserve EnemyLocations(TotalEnemiesInWave)
+
 
 
             Goblins(counter) = New Enemy(PicGoblins(counter), 3, 2, 5)
@@ -121,7 +155,7 @@
 
         ReDim Demons(NumberOfDemons - 1)
         ReDim PicDemons(NumberOfDemons - 1)
-        ReDim Preserve EnemyLocations(TotalEnemiesInWave)
+
 
 
         For counter = 0 To NumberOfDemons - 1
@@ -189,22 +223,30 @@
 
             TowerPlacing = True
 
-            ReDim Preserve PicTower(IntTower)
+            ReDim Preserve PicTower(TowerCount)
 
 
-            PicTower(IntTower) = New PictureBox With {
-            .Size = New Size(37, 33),
-            .BackColor = Color.CadetBlue,
-            .Name = "PicTower" & IntTower.ToString(),
-            .Location = New Point(-100, -100)
+            PicTower(TowerCount) = New PictureBox With {
+    .Size = New Size(37, 33),
+    .BackColor = Color.CadetBlue,
+    .Name = "PicTower" & TowerCount.ToString(),
+    .Location = New Point(-100, -100)
             }
 
-            Controls.Add(PicTower(IntTower))
-            PicTower(IntTower).BringToFront()
+            Controls.Add(PicTower(TowerCount))
+            PicTower(TowerCount).BringToFront()
 
+            ReDim Preserve TowerShots(TowerCount)
 
-            ReDim Preserve Tower(IntTower)
-            Tower(IntTower) = New Tower(PicTower(IntTower), 20, 1)
+            TowerShots(TowerCount) = New PictureBox With {
+                .Size = New Size(12, 22),
+                .BackColor = Color.White,
+                .Name = "TowerShot" & TowerCount.ToString(),
+                .Location = New Point(-100, -100)
+            }
+
+            ReDim Preserve Tower(TowerCount)
+            Tower(TowerCount) = New Tower(PicTower(TowerCount), TowerShots(TowerCount), 10, 20, 1)
 
 
 
@@ -261,12 +303,14 @@
             TowerIndicatorUI.Stop()
             TowerIndicator.Hide()
 
-            Tower(IntTower).TowerGraphic.Location = New Point(PointToClient(Cursor.Position) - p)
-            Tower(IntTower).TowerLocation = Tower(IntTower).TowerGraphic.Location
-            TowersAvailable.Add(Tower(IntTower))
-            totalTowers += 1
+            Tower(TowerCount).TowerGraphic.Location = New Point(PointToClient(Cursor.Position) - p)
+            TowerShots(TowerCount).Location = New Point(PointToClient(Cursor.Position) - p)
+            Tower(TowerCount).TowerLocation = Tower(TowerCount).TowerGraphic.Location
+            CurrentTowers.Add(Tower(TowerCount))
+            TowerLogic.Start()
+            TowerLogic.Enabled = True
+            TowerCount += 1
             Coins -= 20
-            IntTower += 1
             TowerPlacing = False
 
         End If
@@ -275,28 +319,36 @@
     End Sub
 
 
-    Public Sub EnemyInRange()
-
-        For Each Tower As Tower In TowersAvailable
-            For Each Enemy As Enemy In currentEnemies
-
-                Dim distance As Double = Math.Sqrt((Tower.TowerLocation.X - Enemy.EnemyLocation.X) ^ 2 + (Tower.TowerLocation.Y - Enemy.EnemyLocation.Y) ^ 2)
+    '  Public Sub Tower1Shooting()
 
 
-                If distance <= Tower.Range Then
+    ' For Each PlayerTower As Tower In CurrentTowers
+    ' For Each Enemy As Enemy In currentEnemies
 
-                End If
-
-
-
-            Next
-        Next
+    ' If PlayerTower.TowerLocation.X - Enemy.EnemyLocation.X <= PlayerTower.Range And PlayerTower.TowerLocation.Y - Enemy.EnemyLocation.Y <= PlayerTower.Range Then
 
 
-    End Sub
+    'Enemy.Health -= PlayerTower.damage
+
+    ' If Enemy.Health <= 0 Then
+    'Enemy.Enemygraphic.Top -= 1000
+    ' EnemiesKilledInWave += 1
+    'If WaveEnded = False Then
+    '   Coins += Enemy.CoinsDropped
+    'End If
+
+    ' End If
+
+    '  Exit Sub
+    ' End If
 
 
 
+    ' Next
+    ' Next
+
+
+    '  End Sub
 
 
     Public Sub InitializeGame()
@@ -344,15 +396,16 @@
         InitializeGame()
 
 
-        For counter = 0 To totalTowers - 1
-            Controls.Remove(TowersAvailable(counter).TowerGraphic)
+        For counter = 0 To TowerCount - 1
+            Controls.Remove(CurrentTowers(counter).TowerGraphic)
         Next
 
         Tower = Nothing
         PicTower = Nothing
         TowerPlacing = False
-        TotalTowers = 0
-        IntTower = 0
+        CurrentTowers.Clear()
+        TowerCount = 0
+
 
         EnemyLogic.Start()
         GameLogic.Start()
@@ -370,5 +423,6 @@
 
 
     End Sub
+
 
 End Class

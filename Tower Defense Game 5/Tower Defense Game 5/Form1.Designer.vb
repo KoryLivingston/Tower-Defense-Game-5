@@ -53,6 +53,7 @@ Partial Class Form1
         Me.PictureBox11 = New System.Windows.Forms.PictureBox()
         Me.TowerIndicator = New System.Windows.Forms.PictureBox()
         Me.TowerIndicatorUI = New System.Windows.Forms.Timer(Me.components)
+        Me.TowerLogic = New System.Windows.Forms.Timer(Me.components)
         CType(Me.Path1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EnemyBase, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -149,7 +150,7 @@ Partial Class Form1
         Me.LblCoins.Font = New System.Drawing.Font("Agency FB", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblCoins.Location = New System.Drawing.Point(96, 23)
         Me.LblCoins.Name = "LblCoins"
-        Me.LblCoins.Size = New System.Drawing.Size(82, 23)
+        Me.LblCoins.Size = New System.Drawing.Size(102, 23)
         Me.LblCoins.TabIndex = 11
         Me.LblCoins.Text = "COINS 0"
         '
@@ -168,7 +169,7 @@ Partial Class Form1
         Me.PictureBox1.BackColor = System.Drawing.Color.SaddleBrown
         Me.PictureBox1.Location = New System.Drawing.Point(8, 23)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(170, 25)
+        Me.PictureBox1.Size = New System.Drawing.Size(190, 25)
         Me.PictureBox1.TabIndex = 13
         Me.PictureBox1.TabStop = False
         '
@@ -282,7 +283,7 @@ Partial Class Form1
         '
         Me.PictureBox3.Location = New System.Drawing.Point(-3, -2)
         Me.PictureBox3.Name = "PictureBox3"
-        Me.PictureBox3.Size = New System.Drawing.Size(201, 121)
+        Me.PictureBox3.Size = New System.Drawing.Size(218, 121)
         Me.PictureBox3.TabIndex = 23
         Me.PictureBox3.TabStop = False
         '
@@ -339,6 +340,10 @@ Partial Class Form1
         'TowerIndicatorUI
         '
         Me.TowerIndicatorUI.Interval = 1
+        '
+        'TowerLogic
+        '
+        Me.TowerLogic.Interval = 1000
         '
         'Form1
         '
@@ -426,4 +431,5 @@ Partial Class Form1
     Friend WithEvents PictureBox11 As PictureBox
     Friend WithEvents TowerIndicator As PictureBox
     Friend WithEvents TowerIndicatorUI As Timer
+    Friend WithEvents TowerLogic As Timer
 End Class
