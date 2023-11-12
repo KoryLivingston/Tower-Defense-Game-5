@@ -54,6 +54,8 @@ Partial Class Form1
         Me.TowerIndicator = New System.Windows.Forms.PictureBox()
         Me.TowerIndicatorUI = New System.Windows.Forms.Timer(Me.components)
         Me.TowerLogic = New System.Windows.Forms.Timer(Me.components)
+        Me.TowerShooting = New System.Windows.Forms.Timer(Me.components)
+        Me.LblTower1Cost = New System.Windows.Forms.Label()
         CType(Me.Path1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EnemyBase, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -343,7 +345,23 @@ Partial Class Form1
         '
         'TowerLogic
         '
-        Me.TowerLogic.Interval = 1000
+        Me.TowerLogic.Interval = 10
+        '
+        'TowerShooting
+        '
+        Me.TowerShooting.Interval = 1000
+        '
+        'LblTower1Cost
+        '
+        Me.LblTower1Cost.BackColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
+        Me.LblTower1Cost.Font = New System.Drawing.Font("Agency FB", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblTower1Cost.ForeColor = System.Drawing.SystemColors.ButtonFace
+        Me.LblTower1Cost.Location = New System.Drawing.Point(495, 352)
+        Me.LblTower1Cost.Name = "LblTower1Cost"
+        Me.LblTower1Cost.Size = New System.Drawing.Size(59, 36)
+        Me.LblTower1Cost.TabIndex = 37
+        Me.LblTower1Cost.Text = "Cost:        30 COINS"
+        Me.LblTower1Cost.Visible = False
         '
         'Form1
         '
@@ -351,6 +369,7 @@ Partial Class Form1
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.ForestGreen
         Me.ClientSize = New System.Drawing.Size(884, 411)
+        Me.Controls.Add(Me.LblTower1Cost)
         Me.Controls.Add(Me.TowerIndicator)
         Me.Controls.Add(Me.PictureBox8)
         Me.Controls.Add(Me.NextWaveButton)
@@ -432,4 +451,6 @@ Partial Class Form1
     Friend WithEvents TowerIndicator As PictureBox
     Friend WithEvents TowerIndicatorUI As Timer
     Friend WithEvents TowerLogic As Timer
+    Friend WithEvents TowerShooting As Timer
+    Friend WithEvents LblTower1Cost As Label
 End Class

@@ -1,30 +1,46 @@
-﻿Imports System.Reflection
+﻿
 
 Public Class Form1
+
+    'Variables for wave ending condition and enemy logic
 
     Public TotalEnemiesInWave As Integer
     Public EnemiesKilledInWave As Integer
 
+    'List holds all enemies to be used in that wave
+
     Public currentEnemies As New List(Of Enemy)
 
+    'Arrays of objects and pictureboxes for each enemy type
 
     Public Goblins(-1) As Enemy
     Public PicGoblins(-1) As PictureBox
     Public Demons(-1) As Enemy
     Public PicDemons(-1) As PictureBox
 
+    'Condition variable to check if a wave has ended or started
+
     Public WaveEnded As Boolean
-    Public TowerPlacing As Boolean
-    Public TowerShooting As Boolean
+
+    Public additionalenemies As Integer
+    'List holds all towers that have been placed
+
+    Public CurrentTowers As New List(Of Tower)
+
+    'A variable that increments the array of objects and picturebox array, to hold new towers that have been created
+
+    Public TowerCount As Integer
+
+    'Picturebox array and an array of objects for towers
 
     Public PicTower(-1) As PictureBox
     Public Tower(-1) As Tower
-    Public TowerShots(-1) As PictureBox
 
+    'Condition to check if the player is placing a tower for relevant code to be run
 
-    Public CurrentTowers As New List(Of Tower)
-    Public TowerCount As Integer
+    Public TowerPlacing As Boolean
 
+    'Player stats
 
     Public Lives As Integer = 10
     Public Coins As Integer = 50
@@ -34,14 +50,18 @@ Public Class Form1
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
 
+        'Code to be run for wave 1 game state
+
         SpawnGoblins(3)
 
         StartButton.Hide()
         QuitButton.Hide()
 
         TurretPanel.Show()
-        TowerBuy1.Show()
         TurretPanel.BackColor = Color.FromArgb(130, TurretPanel.BackColor)
+        LblTower1Cost.Show()
+        LblTower1Cost.BackColor = Color.FromArgb(130, TurretPanel.BackColor)
+        TowerBuy1.Show()
 
         GameLogic.Enabled = True
         GameLogic.Start()
@@ -49,15 +69,25 @@ Public Class Form1
         EnemyLogic.Enabled = True
         EnemyLogic.Start()
 
+        TowerLogic.Enabled = True
+        TowerLogic.Start()
+
+        TowerShooting.Enabled = True
+        TowerShooting.Start()
+
 
     End Sub
 
 
     Private Sub GameLogic_Tick(sender As Object, e As EventArgs) Handles GameLogic.Tick
 
+        'Updates the labels
+
         LblLives.Text = "LIVES " & Lives
         LblCoins.Text = "COINS " & Coins
         LblWave.Text = "WAVE " & Wave
+
+        'Checks if wave has ended
 
         If WaveEnded = False And EnemiesKilledInWave = TotalEnemiesInWave Then
 
@@ -69,6 +99,7 @@ Public Class Form1
         End If
 
 
+        'condition for endgame
 
         If Lives = 0 Then
             Endgame()
@@ -81,13 +112,12 @@ Public Class Form1
 
     Private Sub EnemyLogic_Tick(sender As Object, e As EventArgs) Handles EnemyLogic.Tick
 
+        'For every enemy alive it will move and check if it reached the base
+
         For counter = 0 To TotalEnemiesInWave - 1
 
             currentEnemies(counter).MoveEnemy()
             currentEnemies(counter).EnemyReachedBase()
-            currentEnemies(counter).EnemyLocation = currentEnemies(counter).Enemygraphic.Location
-
-
 
         Next
 
@@ -96,32 +126,7 @@ Public Class Form1
     End Sub
 
 
-    Private Sub TowerLogic_Tick(sender As Object, e As EventArgs) Handles TowerLogic.Tick
-
-        For Each PlayerTower As Tower In CurrentTowers
-            For Each Enemy As Enemy In currentEnemies
-                If PlayerTower.TowerLocation.X - Enemy.EnemyLocation.X <= PlayerTower.Range And PlayerTower.TowerLocation.Y - Enemy.EnemyLocation.Y <= PlayerTower.Range Then
-
-
-                    Enemy.Health -= PlayerTower.damage
-
-                    If Enemy.Health <= 0 Then
-                        Enemy.Enemygraphic.Top -= 1000
-                        EnemiesKilledInWave += 1
-                        If WaveEnded = False Then
-                            Coins += Enemy.CoinsDropped
-                        End If
-
-                    End If
-
-                    Continue For
-                End If
-            Next
-        Next
-
-    End Sub
-
-
+    'Spawns goblins, creating their pictureboxes and associated objects
 
     Public Sub SpawnGoblins(NumberOfGoblins)
 
@@ -142,7 +147,7 @@ Public Class Form1
 
 
 
-            Goblins(counter) = New Enemy(PicGoblins(counter), 3, 2, 5)
+            Goblins(counter) = New Enemy(PicGoblins(counter), 5, 5, 5)
             TotalEnemiesInWave += 1
             currentEnemies.Add(Goblins(counter))
 
@@ -150,6 +155,8 @@ Public Class Form1
 
 
     End Sub
+
+    'Spawns demons, creating their pictureboxes and associated objects
 
     Public Sub SpawnDemons(NumberOfDemons)
 
@@ -170,7 +177,7 @@ Public Class Form1
             Controls.Add(PicDemons(counter))
             PicDemons(counter).BringToFront()
 
-            Demons(counter) = New Enemy(PicDemons(counter), 3, 4, 10)
+            Demons(counter) = New Enemy(PicDemons(counter), 3, 8, 10)
             TotalEnemiesInWave += 1
             currentEnemies.Add(Demons(counter))
 
@@ -178,6 +185,8 @@ Public Class Form1
 
 
     End Sub
+
+    'Runs when wave ends then stops 2.5 seconds later
 
     Private Sub WaveCompletionUI_Tick(sender As Object, e As EventArgs) Handles WaveCompletionUI.Tick
 
@@ -191,6 +200,10 @@ Public Class Form1
 
     Private Sub NextWaveButton_Click(sender As Object, e As EventArgs) Handles NextWaveButton.Click
 
+        'Once clicked it hides the button increments the wave and the amount of new enemies to be spawned that wave and it calls the wavespawn so the next wave can spawn
+
+
+        additionalenemies += 2
         NextWaveButton.Hide()
         Wave += 1
         WaveSpawn()
@@ -199,11 +212,14 @@ Public Class Form1
 
     Public Sub WaveSpawn()
 
+        'Between the waves 2 to 10, initialize the game and spawn a new amount of enemies each wave and change their location closer to the enemy base
+        'exit do to prevent errors
 
-        Do While Wave >= 2 And Wave <= 8
 
+
+        Do While Wave >= 2 And Wave <= 10
             InitializeGame()
-            SpawnGoblins(3 + Wave)
+            SpawnGoblins(3 + additionalenemies)
 
             For counter = 0 To TotalEnemiesInWave - 1
                 currentEnemies(counter).Enemygraphic.Location = New Point(EnemyBase.Location.X - 100 - (counter * 50), 275)
@@ -218,8 +234,9 @@ Public Class Form1
 
     Private Sub TowerBuy1_Click(sender As Object, e As EventArgs) Handles TowerBuy1.Click
 
+        'If the players coins are valid and they are not currently placing a tower then create a new tower to be placed
 
-        If Coins >= 20 And TowerPlacing = False Then
+        If Coins >= 30 And TowerPlacing = False Then
 
             TowerPlacing = True
 
@@ -230,25 +247,15 @@ Public Class Form1
     .Size = New Size(37, 33),
     .BackColor = Color.CadetBlue,
     .Name = "PicTower" & TowerCount.ToString(),
-    .Location = New Point(-100, -100)
+    .Location = New Point(-1000, -1000)
             }
 
             Controls.Add(PicTower(TowerCount))
             PicTower(TowerCount).BringToFront()
 
-            ReDim Preserve TowerShots(TowerCount)
-
-            TowerShots(TowerCount) = New PictureBox With {
-                .Size = New Size(12, 22),
-                .BackColor = Color.White,
-                .Name = "TowerShot" & TowerCount.ToString(),
-                .Location = New Point(-100, -100)
-            }
 
             ReDim Preserve Tower(TowerCount)
-            Tower(TowerCount) = New Tower(PicTower(TowerCount), TowerShots(TowerCount), 10, 20, 1)
-
-
+            Tower(TowerCount) = New Tower(PicTower(TowerCount), 160, 1)
 
 
         End If
@@ -256,6 +263,8 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
+
+        'If the player is placing a new tower then show the tower indicator for where the mouse moves
 
         If TowerPlacing = True Then
 
@@ -273,6 +282,8 @@ Public Class Form1
 
     End Sub
 
+    'Timer to run the timer indicator animation to match the speed of the mouse
+
     Private Sub TowerIndicatorUI_Tick(sender As Object, e As EventArgs) Handles TowerIndicatorUI.Tick
 
         Dim p As New Point(18, 16)
@@ -281,19 +292,20 @@ Public Class Form1
 
     End Sub
 
-
     Private Sub TowerIndicator_Click(sender As Object, e As EventArgs) Handles TowerIndicator.Click
 
-        Dim p As New Point(18, 16)
+        'Once the tower indicator has been placed if the location is valid then stop and hide towerindicator code,
+        'move tower to location and add to current towers, detuct coins and increment tower count, towerplcacing is false
 
+        Dim p As New Point(18, 16)
 
 
         If TowerPlacing = True Then
 
 
-            For Each picBox As PictureBox In Controls.OfType(Of PictureBox)
+            For Each PictureBox As PictureBox In Controls.OfType(Of PictureBox)
 
-                If picBox IsNot TowerIndicator AndAlso TowerIndicator.Bounds.IntersectsWith(picBox.Bounds) Then
+                If PictureBox IsNot TowerIndicator AndAlso TowerIndicator.Bounds.IntersectsWith(PictureBox.Bounds) Then
                     Exit Sub
                 End If
 
@@ -304,13 +316,9 @@ Public Class Form1
             TowerIndicator.Hide()
 
             Tower(TowerCount).TowerGraphic.Location = New Point(PointToClient(Cursor.Position) - p)
-            TowerShots(TowerCount).Location = New Point(PointToClient(Cursor.Position) - p)
-            Tower(TowerCount).TowerLocation = Tower(TowerCount).TowerGraphic.Location
             CurrentTowers.Add(Tower(TowerCount))
-            TowerLogic.Start()
-            TowerLogic.Enabled = True
+            Coins -= 30
             TowerCount += 1
-            Coins -= 20
             TowerPlacing = False
 
         End If
@@ -319,44 +327,108 @@ Public Class Form1
     End Sub
 
 
-    '  Public Sub Tower1Shooting()
+    Private Sub TowerLogic_Tick(sender As Object, e As EventArgs) Handles TowerLogic.Tick
+
+        'Checks every tower to see if they have a target, if not it assigns the closest one
+
+        For Each PlayerTower As Tower In CurrentTowers
+
+            If PlayerTower.TargetEnemy Is Nothing Then
+
+                For Each Enemy As Enemy In currentEnemies
+
+                    If EnemyIsInRange(PlayerTower, Enemy) Then
+
+                        PlayerTower.TargetEnemy = Enemy
+                        Exit For
+
+                    End If
+
+                Next
+
+            End If
+
+        Next
+
+    End Sub
+
+    Private Sub TowerShooting_Tick(sender As Object, e As EventArgs) Handles TowerShooting.Tick
+
+        'Checks every tower to see if their enemy has already been killed to avoid logic errors with enemieskilledinwave
+
+        For Each PlayerTower As Tower In CurrentTowers
+
+            If PlayerTower.TargetEnemy IsNot Nothing Then
+
+                For Each otherTower As Tower In CurrentTowers
+
+                    If otherTower.TargetEnemy IsNot Nothing Then
+
+                        If otherTower.TargetEnemy.Health <= 0 Then
+                            otherTower.TargetEnemy = Nothing
+
+                        End If
+                    End If
+
+                Next
+
+            End If
+
+            'If this tower does have a target, deal damage to it every second, if this targets health reaches zero on this instance run the enemykilled logic
+
+            If PlayerTower.TargetEnemy IsNot Nothing Then
 
 
-    ' For Each PlayerTower As Tower In CurrentTowers
-    ' For Each Enemy As Enemy In currentEnemies
-
-    ' If PlayerTower.TowerLocation.X - Enemy.EnemyLocation.X <= PlayerTower.Range And PlayerTower.TowerLocation.Y - Enemy.EnemyLocation.Y <= PlayerTower.Range Then
+                PlayerTower.DealDamage(PlayerTower.TargetEnemy)
 
 
-    'Enemy.Health -= PlayerTower.damage
+                If PlayerTower.TargetEnemy.Health <= 0 Then
 
-    ' If Enemy.Health <= 0 Then
-    'Enemy.Enemygraphic.Top -= 1000
-    ' EnemiesKilledInWave += 1
-    'If WaveEnded = False Then
-    '   Coins += Enemy.CoinsDropped
-    'End If
+                    PlayerTower.TargetEnemy.Enemygraphic.Top -= 1000
+                    EnemiesKilledInWave += 1
 
-    ' End If
+                    If WaveEnded = False Then
+                        Coins += PlayerTower.TargetEnemy.CoinsDropped
+                    End If
 
-    '  Exit Sub
-    ' End If
+                    PlayerTower.TargetEnemy = Nothing
 
+                End If
+            End If
 
-
-    ' Next
-    ' Next
+        Next
 
 
-    '  End Sub
+    End Sub
+
+    Public Function EnemyIsInRange(Tower As Tower, Enemy As Enemy) As Boolean
+
+        ' Uses distance formula to calculate the distance between the two centers between the tower and the enenmy
+        'If this distance is less than or equal to the range it must be in range
+
+        Dim towerCenterX As Integer = Tower.TowerGraphic.Location.X + Tower.TowerGraphic.Width \ 2
+        Dim towerCenterY As Integer = Tower.TowerGraphic.Location.Y - Tower.TowerGraphic.Height \ 2
+        Dim enemyCenterX As Integer = Enemy.Enemygraphic.Location.X + Enemy.Enemygraphic.Width \ 2
+        Dim enemyCenterY As Integer = Enemy.Enemygraphic.Location.Y - Enemy.Enemygraphic.Height \ 2
+
+        Dim distance As Double = Math.Sqrt((towerCenterX - enemyCenterX) ^ 2 + (towerCenterY - enemyCenterY) ^ 2)
+
+
+        Return Enemy.Enemygraphic.Location.X >= 20 And
+            distance <= Tower.Range
+
+    End Function
 
 
     Public Sub InitializeGame()
 
+        'Removes pictureboxes of current wave before clearing arrays
 
         For counter = 0 To TotalEnemiesInWave - 1
             Controls.Remove(currentEnemies(counter).Enemygraphic)
         Next
+
+        'clearing arrays and the list and logic variables, setting waveneded to false since a new wave has started
 
         Goblins = Nothing
         PicGoblins = Nothing
@@ -370,15 +442,13 @@ Public Class Form1
 
     End Sub
 
-
-
-
-
+    'If the player runs out of lives this will run , stoping the timers to stop the game and showing the game over ui
     Public Sub Endgame()
 
-        EnemyLogic.Stop()
         GameLogic.Stop()
-
+        EnemyLogic.Stop()
+        TowerLogic.Stop()
+        TowerShooting.Stop()
 
         LblGameOver.Show()
         LblGameOver.BringToFront()
@@ -389,26 +459,36 @@ Public Class Form1
 
     Private Sub RetryButton_Click(sender As Object, e As EventArgs) Handles RetryButton.Click
 
+        ' Resets player and game stats
         Lives = 10
         Coins = 50
         Wave = 1
 
+        additionalenemies = 0
+
+        'Resets the enemies
+
         InitializeGame()
 
+        'removes current tower pictureboxes
 
         For counter = 0 To TowerCount - 1
             Controls.Remove(CurrentTowers(counter).TowerGraphic)
         Next
 
+        'Clears tower arrays, list,variables and tower placing
         Tower = Nothing
         PicTower = Nothing
-        TowerPlacing = False
+
         CurrentTowers.Clear()
         TowerCount = 0
+        TowerPlacing = False
 
 
         EnemyLogic.Start()
         GameLogic.Start()
+        TowerLogic.Start()
+        TowerShooting.Start()
 
         LblGameOver.Hide()
         RetryButton.Hide()
@@ -419,10 +499,9 @@ Public Class Form1
 
     Private Sub QuitButton_Click(sender As Object, e As EventArgs) Handles QuitButton.Click
 
-        Me.Close()
+        Close()
 
 
     End Sub
-
 
 End Class

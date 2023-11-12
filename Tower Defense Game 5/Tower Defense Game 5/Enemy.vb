@@ -1,16 +1,15 @@
 ﻿Public Class Enemy
 
+    'attributes of enemies
 
     Public Enemygraphic As PictureBox
     Public MovementSpeed As Integer
     Public Health As Integer
     Public CoinsDropped As Integer
-    Public EnemyLocation As Point
 
     Public Sub New(Graphic As PictureBox, MovementSpeed As Integer, Health As Integer, CoinsDropped As Integer)
 
         Enemygraphic = Graphic
-        EnemyLocation = Nothing
 
         With Me
 
@@ -21,6 +20,8 @@
         End With
 
     End Sub
+
+    'Moves enemy to each corner of the path
 
     Public Sub MoveEnemy()
 
@@ -40,7 +41,10 @@
 
     End Sub
 
+
     Public Sub EnemyReachedBase()
+
+        'If the enemy collides with the player base it runs this code
 
         If Enemygraphic.Bounds.IntersectsWith(Form1.PicBase.Bounds) Then
 
@@ -49,6 +53,7 @@
                 .Lives -= 1
                 .EnemiesKilledInWave += 1
             End With
+
         End If
 
 

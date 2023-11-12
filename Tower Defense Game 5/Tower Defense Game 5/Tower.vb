@@ -1,27 +1,36 @@
-﻿Public Class Tower
+﻿
+Public Class Tower
+
+    'attributes of Towers
 
     Public TowerGraphic As PictureBox
-    Public ShotsGraphic As PictureBox
-    Public ShotSpeed As Integer
+    Public TargetEnemy As Enemy
     Public Range As Integer
     Public damage As Integer
-    Public TowerLocation As Point
-    Public Sub New(Graphic As PictureBox, TowerShots As PictureBox, ShotSpeed As Integer, Range As Integer, Damage As Integer)
+
+    Public Sub New(Graphic As PictureBox, Range As Integer, Damage As Integer)
 
         TowerGraphic = Graphic
-        TowerLocation = Nothing
+        TargetEnemy = Nothing
 
         With Me
 
-            .ShotsGraphic = TowerShots
-            .ShotSpeed = ShotSpeed
             .Range = Range
             .damage = Damage
+
         End With
 
 
     End Sub
 
+
+    Public Sub DealDamage(Enemy As Enemy)
+
+        If TargetEnemy IsNot Nothing Then
+            Enemy.Health -= Me.damage
+        End If
+
+    End Sub
 
 
 End Class
