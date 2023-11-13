@@ -56,6 +56,13 @@ Partial Class Form1
         Me.TowerLogic = New System.Windows.Forms.Timer(Me.components)
         Me.TowerShooting = New System.Windows.Forms.Timer(Me.components)
         Me.LblTower1Cost = New System.Windows.Forms.Label()
+        Me.PictureBox9 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox10 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox12 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox13 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox14 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox15 = New System.Windows.Forms.PictureBox()
+        Me.EnemySpawnTimer = New System.Windows.Forms.Timer(Me.components)
         CType(Me.Path1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EnemyBase, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -73,6 +80,12 @@ Partial Class Form1
         CType(Me.PictureBox8, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox11, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TowerIndicator, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox9, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox10, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox12, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox13, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox14, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox15, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'GameLogic
@@ -315,7 +328,7 @@ Partial Class Form1
         '
         'PictureBox8
         '
-        Me.PictureBox8.Location = New System.Drawing.Point(-3, 399)
+        Me.PictureBox8.Location = New System.Drawing.Point(-3, 403)
         Me.PictureBox8.Name = "PictureBox8"
         Me.PictureBox8.Size = New System.Drawing.Size(479, 12)
         Me.PictureBox8.TabIndex = 27
@@ -363,6 +376,58 @@ Partial Class Form1
         Me.LblTower1Cost.Text = "Cost:        30 COINS"
         Me.LblTower1Cost.Visible = False
         '
+        'PictureBox9
+        '
+        Me.PictureBox9.Location = New System.Drawing.Point(-6, 320)
+        Me.PictureBox9.Name = "PictureBox9"
+        Me.PictureBox9.Size = New System.Drawing.Size(479, 29)
+        Me.PictureBox9.TabIndex = 38
+        Me.PictureBox9.TabStop = False
+        '
+        'PictureBox10
+        '
+        Me.PictureBox10.Location = New System.Drawing.Point(-6, 230)
+        Me.PictureBox10.Name = "PictureBox10"
+        Me.PictureBox10.Size = New System.Drawing.Size(422, 17)
+        Me.PictureBox10.TabIndex = 39
+        Me.PictureBox10.TabStop = False
+        '
+        'PictureBox12
+        '
+        Me.PictureBox12.Location = New System.Drawing.Point(464, 184)
+        Me.PictureBox12.Name = "PictureBox12"
+        Me.PictureBox12.Size = New System.Drawing.Size(17, 156)
+        Me.PictureBox12.TabIndex = 40
+        Me.PictureBox12.TabStop = False
+        '
+        'PictureBox13
+        '
+        Me.PictureBox13.Location = New System.Drawing.Point(469, 180)
+        Me.PictureBox13.Name = "PictureBox13"
+        Me.PictureBox13.Size = New System.Drawing.Size(422, 15)
+        Me.PictureBox13.TabIndex = 41
+        Me.PictureBox13.TabStop = False
+        '
+        'PictureBox14
+        '
+        Me.PictureBox14.Location = New System.Drawing.Point(369, 74)
+        Me.PictureBox14.Name = "PictureBox14"
+        Me.PictureBox14.Size = New System.Drawing.Size(523, 15)
+        Me.PictureBox14.TabIndex = 42
+        Me.PictureBox14.TabStop = False
+        '
+        'PictureBox15
+        '
+        Me.PictureBox15.Location = New System.Drawing.Point(356, 74)
+        Me.PictureBox15.Name = "PictureBox15"
+        Me.PictureBox15.Size = New System.Drawing.Size(17, 171)
+        Me.PictureBox15.TabIndex = 43
+        Me.PictureBox15.TabStop = False
+        '
+        'EnemySpawnTimer
+        '
+        Me.EnemySpawnTimer.Interval = 20000
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -396,6 +461,12 @@ Partial Class Form1
         Me.Controls.Add(Me.PictureBox6)
         Me.Controls.Add(Me.PictureBox7)
         Me.Controls.Add(Me.PictureBox11)
+        Me.Controls.Add(Me.PictureBox9)
+        Me.Controls.Add(Me.PictureBox10)
+        Me.Controls.Add(Me.PictureBox12)
+        Me.Controls.Add(Me.PictureBox13)
+        Me.Controls.Add(Me.PictureBox14)
+        Me.Controls.Add(Me.PictureBox15)
         Me.Name = "Form1"
         Me.Text = "Form1"
         CType(Me.Path1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -415,6 +486,12 @@ Partial Class Form1
         CType(Me.PictureBox8, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox11, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TowerIndicator, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox9, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox10, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox12, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox13, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox14, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox15, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -453,4 +530,11 @@ Partial Class Form1
     Friend WithEvents TowerLogic As Timer
     Friend WithEvents TowerShooting As Timer
     Friend WithEvents LblTower1Cost As Label
+    Friend WithEvents PictureBox9 As PictureBox
+    Friend WithEvents PictureBox10 As PictureBox
+    Friend WithEvents PictureBox12 As PictureBox
+    Friend WithEvents PictureBox13 As PictureBox
+    Friend WithEvents PictureBox14 As PictureBox
+    Friend WithEvents PictureBox15 As PictureBox
+    Friend WithEvents EnemySpawnTimer As Timer
 End Class

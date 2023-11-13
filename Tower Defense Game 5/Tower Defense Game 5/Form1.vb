@@ -1,5 +1,7 @@
 ﻿
 
+Imports System.Reflection
+
 Public Class Form1
 
     'Variables for wave ending condition and enemy logic
@@ -22,7 +24,10 @@ Public Class Form1
 
     Public WaveEnded As Boolean
 
+    'Variable to be incremented every time a wave has ended, new value will then be added on the next wave
+
     Public additionalenemies As Integer
+
     'List holds all towers that have been placed
 
     Public CurrentTowers As New List(Of Tower)
@@ -46,6 +51,8 @@ Public Class Form1
     Public Coins As Integer = 50
     Public Wave As Integer = 1
 
+    Dim EnemiesSpawned As Integer
+    Dim EnemiesLeftOver As Integer
 
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
@@ -88,6 +95,7 @@ Public Class Form1
         LblWave.Text = "WAVE " & Wave
 
         'Checks if wave has ended
+        Console.WriteLine($"Wave: {Wave}, TotalEnemies: {TotalEnemiesInWave}, KilledEnemies: {EnemiesKilledInWave}, WaveEnded: {WaveEnded}")
 
         If WaveEnded = False And EnemiesKilledInWave = TotalEnemiesInWave Then
 
@@ -132,6 +140,7 @@ Public Class Form1
 
         ReDim Goblins(NumberOfGoblins - 1)
         ReDim PicGoblins(NumberOfGoblins - 1)
+
 
         For counter = 0 To NumberOfGoblins - 1
 
@@ -186,7 +195,7 @@ Public Class Form1
 
     End Sub
 
-    'Runs when wave ends then stops 2.5 seconds later
+    'Runs when wave ends then stops 2.0 seconds later
 
     Private Sub WaveCompletionUI_Tick(sender As Object, e As EventArgs) Handles WaveCompletionUI.Tick
 
@@ -216,21 +225,58 @@ Public Class Form1
         'exit do to prevent errors
 
 
-
         Do While Wave >= 2 And Wave <= 10
             InitializeGame()
             SpawnGoblins(3 + additionalenemies)
 
-            For counter = 0 To TotalEnemiesInWave - 1
-                currentEnemies(counter).Enemygraphic.Location = New Point(EnemyBase.Location.X - 100 - (counter * 50), 275)
-            Next
 
-            Exit Do
+            EnemySpawnAdjustments()
+
+
+            If EnemiesSpawned < TotalEnemiesInWave Then
+
+                EnemySpawnTimer.Start()
+
+            End If
+
+            If EnemiesSpawned = TotalEnemiesInWave Then
+                Exit Do
+            End If
+
+        Loop
+
+
+    End Sub
+    Public Sub EnemySpawnAdjustments()
+
+        Dim EnemiesSpawnedNow As Integer
+
+        Do While EnemiesSpawnedNow < 9
+            Dim index As Integer
+            If currentEnemies(EnemiesSpawned).IsSpawn = False Then
+                currentEnemies(EnemiesSpawned).Enemygraphic.Location = New Point(EnemyBase.Location.X - 100 - (index * 50), 275)
+                currentEnemies(EnemiesSpawned).IsSpawn = True
+                index += 1
+                EnemiesSpawned += 1
+                EnemiesSpawnedNow += 1
+
+                If EnemiesSpawned = TotalEnemiesInWave Then
+                    Exit Sub
+                End If
+
+            End If
 
         Loop
 
     End Sub
 
+    Private Sub EnemySpawnTimer_Tick(sender As Object, e As EventArgs) Handles EnemySpawnTimer.Tick
+
+        EnemySpawnAdjustments()
+
+        EnemySpawnTimer.Stop()
+
+    End Sub
 
     Private Sub TowerBuy1_Click(sender As Object, e As EventArgs) Handles TowerBuy1.Click
 
@@ -382,7 +428,7 @@ Public Class Form1
                 PlayerTower.DealDamage(PlayerTower.TargetEnemy)
 
 
-                If PlayerTower.TargetEnemy.Health <= 0 Then
+                If PlayerTower.TargetEnemy.Health <= 0 And PlayerTower.TargetEnemy.IsDead = False Then
 
                     PlayerTower.TargetEnemy.Enemygraphic.Top -= 1000
                     EnemiesKilledInWave += 1
@@ -391,6 +437,7 @@ Public Class Form1
                         Coins += PlayerTower.TargetEnemy.CoinsDropped
                     End If
 
+                    PlayerTower.TargetEnemy.IsDead = True
                     PlayerTower.TargetEnemy = Nothing
 
                 End If
@@ -405,6 +452,8 @@ Public Class Form1
 
         ' Uses distance formula to calculate the distance between the two centers between the tower and the enenmy
         'If this distance is less than or equal to the range it must be in range
+        'The range = radius of the area of the circle for a towers range 
+        'Therefor if the distance is less than the "radius", it must be in range
 
         Dim towerCenterX As Integer = Tower.TowerGraphic.Location.X + Tower.TowerGraphic.Width \ 2
         Dim towerCenterY As Integer = Tower.TowerGraphic.Location.Y - Tower.TowerGraphic.Height \ 2
@@ -415,7 +464,7 @@ Public Class Form1
 
 
         Return Enemy.Enemygraphic.Location.X >= 20 And
-            distance <= Tower.Range
+    distance <= Tower.Range
 
     End Function
 
@@ -425,6 +474,7 @@ Public Class Form1
         'Removes pictureboxes of current wave before clearing arrays
 
         For counter = 0 To TotalEnemiesInWave - 1
+            currentEnemies(counter).Enemygraphic.Dispose()
             Controls.Remove(currentEnemies(counter).Enemygraphic)
         Next
 

@@ -6,6 +6,8 @@
     Public MovementSpeed As Integer
     Public Health As Integer
     Public CoinsDropped As Integer
+    Public IsDead As Boolean
+    Public IsSpawn As Boolean
 
     Public Sub New(Graphic As PictureBox, MovementSpeed As Integer, Health As Integer, CoinsDropped As Integer)
 
@@ -46,14 +48,14 @@
 
         'If the enemy collides with the player base it runs this code
 
-        If Enemygraphic.Bounds.IntersectsWith(Form1.PicBase.Bounds) Then
+        If Enemygraphic.Bounds.IntersectsWith(Form1.PicBase.Bounds) And IsDead = False Then
 
             Enemygraphic.Top -= 1000
             With Form1
                 .Lives -= 1
                 .EnemiesKilledInWave += 1
             End With
-
+            IsDead = True
         End If
 
 
