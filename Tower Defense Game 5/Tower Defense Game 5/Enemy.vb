@@ -7,7 +7,6 @@
     Public Health As Integer
     Public CoinsDropped As Integer
     Public IsDead As Boolean
-    Public IsSpawn As Boolean
 
     Public Sub New(Graphic As PictureBox, MovementSpeed As Integer, Health As Integer, CoinsDropped As Integer)
 
@@ -27,7 +26,7 @@
 
     Public Sub MoveEnemy()
 
-        If Enemygraphic.Location.X > -1000 And Enemygraphic.Location.X < 405 Then
+        If Enemygraphic.Location.X > -810 And Enemygraphic.Location.X < 405 Then
             Enemygraphic.Left += MovementSpeed
         End If
 
