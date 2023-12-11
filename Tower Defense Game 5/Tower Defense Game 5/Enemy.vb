@@ -1,12 +1,10 @@
 ﻿Public Class Enemy
 
-    'attributes of enemies
-
-    Public Enemygraphic As PictureBox
-    Public MovementSpeed As Integer
-    Public Health As Integer
-    Public CoinsDropped As Integer
-    Public IsDead As Boolean
+    Private Enemygraphic As PictureBox
+    Private MovementSpeed As Integer
+    Private Health As Integer
+    Private CoinsDropped As Integer
+    Private IsDead As Boolean
 
     Public Sub New(Graphic As PictureBox, MovementSpeed As Integer, Health As Integer, CoinsDropped As Integer)
 
@@ -22,7 +20,9 @@
 
     End Sub
 
-    'Moves enemy to each corner of the path
+    'Method to make the enemy move across the path
+    'Each condition adjusts the enemygraphic to the number of pixels equal to the movement speed in the given direction 
+    'Conditions are used to make the enemy move in one direction until it reaches a certain point
 
     Public Sub MoveEnemy()
 
@@ -42,17 +42,18 @@
 
     End Sub
 
+    'Method used for when an enemy reaches the players base
+    'If there is a collision it will remove the enemy from the form, decrease player lives by 1, increase enemieskilledinwave by 1
+    'IsDead attribute is set to true to prevent the same enemy from triggering other enemy death conditions after it has died
 
     Public Sub EnemyReachedBase()
 
-        'If the enemy collides with the player base it runs this code
-
-        If Enemygraphic.Bounds.IntersectsWith(Form1.PicBase.Bounds) And IsDead = False Then
+        If Enemygraphic.Bounds.IntersectsWith(CitadelClash.PicBase.Bounds) And IsDead = False Then
 
             Enemygraphic.Top -= 1000
-            With Form1
-                .Lives -= 1
-                .EnemiesKilledInWave += 1
+            With CitadelClash
+                .setLives(1)
+                .setEnemiesKilledInWave(1)
             End With
             IsDead = True
         End If
@@ -60,6 +61,38 @@
 
     End Sub
 
+    Public Function getEnemyGraphic()
 
+        Return Enemygraphic
 
+    End Function
+
+    Public Sub setHealth(DamageRecieved As Integer)
+
+        Health -= DamageRecieved
+
+    End Sub
+
+    Public Function getHealth()
+
+        Return Health
+
+    End Function
+
+    Public Sub setIsdead(state As Boolean)
+
+        IsDead = state
+
+    End Sub
+    Public Function getIsDead()
+
+        Return IsDead
+
+    End Function
+
+    Public Function getCoinsDropped()
+
+        Return CoinsDropped
+
+    End Function
 End Class
