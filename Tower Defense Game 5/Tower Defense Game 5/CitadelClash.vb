@@ -3,20 +3,19 @@ Public Class CitadelClash
 
     '972 Lines of Code in Total
 
-
-    'Totalenemiesinwave will be assigned to the value equal to the number of enemies created for that wave
-    'EnemiesKilledInWave will be incremented from 0 for every enemy that has been killed
-    'These variables are used to check if a wave has ended
-
-    Private TotalEnemiesInWave As Integer
-    Private EnemiesKilledInWave As Integer
-    Private WaveEnded As Boolean
-
     'Arrays of Enemy and PictureBox for every enemy
 
     Private Enemies() As Enemy
     Private PicEnemies() As PictureBox
 
+    'Totalenemiesinwave will be assigned to the value equal to the number of enemies created for that wave
+    'EnemiesKilledInWave will be incremented from 0 for every enemy that has been killed
+    'These variables are used to check if a wave has ended
+
+
+    Private TotalEnemiesInWave As Integer
+    Private EnemiesKilledInWave As Integer
+    Private WaveEnded As Boolean
 
     'additionalEnemies is increased by 2 after a wave has ended, used to increase the amount of enemies spawned for the next wave
     'Enemynum is used to hold the index of the next enemy to be spawned as well is to check if every enemy has been spawned
@@ -25,6 +24,7 @@ Public Class CitadelClash
     Private additionalEnemies As Integer
     Private EnemyNum As Integer
     Private LastEnemy As Enemy
+
 
     'List to hold every tower object to allow towers to be sold and to be removed from the list without affecting the logic of the code
     'Arrays of Tower and pictureboxes for each tower
@@ -54,30 +54,14 @@ Public Class CitadelClash
     Private clickedTower As Tower
     Private Index As Integer
 
+
     'Player stats
 
-    Private Lives As Integer = 10
+    Private Lives As Integer = 0
     Private Coins As Integer = 60
     Private Wave As Integer = 1
 
-    'Arrays to hold the player names and waves reached of the original leaderboard
-
-    Private PlayerNames() As String = {"QSD", "BMV", "AJS", "123", "HJT", Nothing}
-    Private WavesReached() As Integer = {"13", "10", "8", "12", "5", Nothing}
-
-
-    'Arrays of label to hold the data for each playername with its associated waves reached
-
-    Private NameLabels(4) As Label
-    Private WaveReachedLabels(4) As Label
-
-
-    'Player information used in the leaderboard and database table
-
-    Private UserName As String
-    Private TotalEnemiesKilled As Integer
-    Private TotalCoinsEarned As Integer
-
+    Private LeaderBoard As New LeaderBoardInfo
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
 
@@ -89,7 +73,7 @@ Public Class CitadelClash
         'Starts the games timers
 
         WaveSpawn()
-        InitializeLabels()
+        LeaderBoard.InitializeLabels()
         LoadUI()
         startGameTimers()
 
@@ -153,6 +137,45 @@ Public Class CitadelClash
 
     End Sub
 
+    Private Sub TowerLogic_Tick(sender As Object, e As EventArgs) Handles TowerLogic.Tick
+
+        'Updates Tower Cap Label
+
+        LblTowerCapacity.Text = "Tower Capacity" & " " & TowerCount & "/25"
+
+
+        'For every tower find it a target and update this towers buff price label so that it holds the price of the next available upgrade
+
+        For counter = 0 To TowerCount - 1
+
+            currentTowers(counter).FindTarget()
+
+            currentTowers(counter).setLblBuffPrice(currentTowers(counter).getcurrentUpgrade)
+
+        Next
+
+        'Timer is used to allow the adjusting of the tower indicators psotion to be as responsive as possible
+        'Adjust the tower indicators position so that its center is at the cursors position
+
+        If TowerPlacing = True Then
+
+            Dim p As New Point(18, 16)
+            TowerIndicator.Location = New Point(PointToClient(Cursor.Position) - p)
+
+        End If
+
+    End Sub
+
+
+    Private Sub WaveCompletionUI_Tick(sender As Object, e As EventArgs) Handles WaveCompletionUI.Tick
+
+        LblWaveCompleted.Hide()
+        WaveCompletionUI.Stop()
+        NextWaveButton.Show()
+        NextWaveButton.BringToFront()
+
+    End Sub
+
 
     'Used to create each enemy with their associated picturebox attributes and enemy attributes of that wave
 
@@ -171,9 +194,9 @@ Public Class CitadelClash
         For counter = 0 To NumberOfEnemies - 1
 
             PicEnemies(counter) = New PictureBox With {
-                .Location = New Point(-1000, -100),
-                .Size = New Size(EnemySizeX, EnemySizeY),
-                .BackColor = EnemyColor
+    .Location = New Point(-1000, -100),
+    .Size = New Size(EnemySizeX, EnemySizeY),
+    .BackColor = EnemyColor
             }
 
             Controls.Add(PicEnemies(counter))
@@ -188,17 +211,6 @@ Public Class CitadelClash
 
 
         Next
-
-
-
-    End Sub
-
-    Private Sub WaveCompletionUI_Tick(sender As Object, e As EventArgs) Handles WaveCompletionUI.Tick
-
-        LblWaveCompleted.Hide()
-        WaveCompletionUI.Stop()
-        NextWaveButton.Show()
-        NextWaveButton.BringToFront()
 
     End Sub
 
@@ -219,6 +231,7 @@ Public Class CitadelClash
         End If
 
         additionalEnemies += 2
+
         WaveSpawn()
 
     End Sub
@@ -334,23 +347,9 @@ Public Class CitadelClash
             TowerIndicator.BringToFront()
             TowerIndicator.BackColor = Color.FromArgb(200, TowerIndicator.BackColor)
 
-            TowerIndicatorUI.Start()
-
         End If
 
     End Sub
-
-    'Timer is used to allow the adjusting of the tower indicators psotion to be as responsive as possible
-    'Adjust the tower indicators position so that its center is at the cursors position
-
-    Private Sub TowerIndicatorUI_Tick(sender As Object, e As EventArgs) Handles TowerIndicatorUI.Tick
-
-        Dim p As New Point(18, 16)
-
-        TowerIndicator.Location = New Point(PointToClient(Cursor.Position) - p)
-
-    End Sub
-
 
     Private Sub TowerIndicator_Click(sender As Object, e As EventArgs) Handles TowerIndicator.Click
 
@@ -360,104 +359,97 @@ Public Class CitadelClash
         'Checks if the tower indicator is not in collision with any picturebox to ensure that the spawn location is valid
         'If the location is valid then it will hide the UI used during tower placing and create a tower to be placed at this new set position
 
-        If TowerPlacing = True Then
+        For Each PictureBox As PictureBox In Controls.OfType(Of PictureBox)
+
+            If PictureBox IsNot TowerIndicator AndAlso TowerIndicator.Bounds.IntersectsWith(PictureBox.Bounds) Then
+                Exit Sub
+            End If
+
+        Next
+
+        TowerIndicator.Hide()
+        CancelPlacing.Hide()
+
+        'Redeclares PicTower to towercount to allow a new tower picturebox to be created
+
+        ReDim Preserve PicTower(TowerCount)
 
 
-            For Each PictureBox As PictureBox In Controls.OfType(Of PictureBox)
-
-                If PictureBox IsNot TowerIndicator AndAlso TowerIndicator.Bounds.IntersectsWith(PictureBox.Bounds) Then
-                    Exit Sub
-                End If
-
-            Next
-
-            TowerIndicator.Hide()
-            CancelPlacing.Hide()
-            TowerIndicatorUI.Stop()
-
-            'Redeclares PicTower to towercount to allow a new tower picturebox to be created
-
-            ReDim Preserve PicTower(TowerCount)
-
-
-            PicTower(TowerCount) = New PictureBox With {
+        PicTower(TowerCount) = New PictureBox With {
     .Size = New Size(37, 33),
     .BackColor = Color.CadetBlue,
     .Name = "PicTower" & TowerCount.ToString,
     .Location = PointToClient(Cursor.Position) - p
                     }
 
-            'Adds it to the forms controls so that it can be used
+        'Adds it to the forms controls so that it can be used
 
-            Controls.Add(PicTower(TowerCount))
-            PicTower(TowerCount).BringToFront()
+        Controls.Add(PicTower(TowerCount))
+        PicTower(TowerCount).BringToFront()
 
-            'Adds this picturebox click event as a handler of the tower_click sub routine
+        'Adds this picturebox click event as a handler of the tower_click sub routine
 
-            AddHandler PicTower(TowerCount).Click, AddressOf Tower_Click
+        AddHandler PicTower(TowerCount).Click, AddressOf Tower_Click
 
-            'Redeclares TowerUI to towercount to allow a new tower UI to be created
+        'Redeclares TowerUI to towercount to allow a new tower UI to be created
 
-            ReDim Preserve TowerUI(TowerCount)
+        ReDim Preserve TowerUI(TowerCount)
 
-            TowerUI(TowerCount) = New Panel With {
-                .Size = New Size(108, 164),
-                .BackColor = Color.FromArgb(130, TurretPanel.BackColor),
-                .Location = New Point(-1000, 100)
+        TowerUI(TowerCount) = New Panel With {
+    .Size = New Size(108, 164),
+    .BackColor = Color.FromArgb(130, TurretPanel.BackColor),
+    .Location = New Point(-1000, 100)
                 }
 
-            Controls.Add(TowerUI(TowerCount))
+        Controls.Add(TowerUI(TowerCount))
 
-            'Redeclares LBlBuffPrice to allow a new tower buff price label to be created
+        'Redeclares LBlBuffPrice to allow a new tower buff price label to be created
 
-            ReDim Preserve LblBuffPrice(TowerCount)
+        ReDim Preserve LblBuffPrice(TowerCount)
 
-            LblBuffPrice(TowerCount) = New Label With {
-                .Font = New Font("Agency FB", 10, FontStyle.Bold),
-                .ForeColor = Color.White,
-                .TextAlign = 2,
-                .Size = New Size(82, 17),
-                .BackColor = Color.FromArgb(130, TurretPanel.BackColor),
-                .Location = New Point(14, 50)
+        LblBuffPrice(TowerCount) = New Label With {
+    .Font = New Font("Agency FB", 10, FontStyle.Bold),
+    .ForeColor = Color.White,
+    .TextAlign = 2,
+    .Size = New Size(82, 17),
+    .BackColor = Color.FromArgb(130, TurretPanel.BackColor),
+    .Location = New Point(14, 50)
             }
 
-            'Added to the towerUI Controls as it will be used in this panel
+        'Added to the towerUI Controls as it will be used in this panel
 
-            TowerUI(TowerCount).Controls.Add(LblBuffPrice(TowerCount))
+        TowerUI(TowerCount).Controls.Add(LblBuffPrice(TowerCount))
 
-            'Redcalres every upgradeslot array before use
+        'Redcalres every upgradeslot array before use
 
-            ReDim Preserve UpgradeSlots1(TowerCount)
-            ReDim Preserve UpgradeSlots2(TowerCount)
-            ReDim Preserve UpgradeSlots3(TowerCount)
+        ReDim Preserve UpgradeSlots1(TowerCount)
+        ReDim Preserve UpgradeSlots2(TowerCount)
+        ReDim Preserve UpgradeSlots3(TowerCount)
 
-            'Creates every upgrade slot for this tower
+        'Creates every upgrade slot for this tower
 
-            CreateUpgradeSlots(UpgradeSlots1, 14, 5)
-            CreateUpgradeSlots(UpgradeSlots2, 45, 5)
-            CreateUpgradeSlots(UpgradeSlots3, 75, 5)
+        CreateUpgradeSlots(UpgradeSlots1, 14, 5)
+        CreateUpgradeSlots(UpgradeSlots2, 45, 5)
+        CreateUpgradeSlots(UpgradeSlots3, 75, 5)
 
-            'New Tower is created
+        'New Tower is created
 
-            ReDim Preserve Towers(TowerCount)
-                Towers(TowerCount) = New Tower(PicTower(TowerCount), TowerUI(TowerCount), LblBuffPrice(TowerCount), UpgradeSlots1(TowerCount), UpgradeSlots2(TowerCount), UpgradeSlots3(TowerCount), 160, 1, 100)
-                currentTowers.Add(Towers(TowerCount))
+        ReDim Preserve Towers(TowerCount)
+        Towers(TowerCount) = New Tower(PicTower(TowerCount), TowerUI(TowerCount), LblBuffPrice(TowerCount), UpgradeSlots1(TowerCount), UpgradeSlots2(TowerCount), UpgradeSlots3(TowerCount), 1, 100)
+        currentTowers.Add(Towers(TowerCount))
 
-                Coins -= 30
-                TowerCount += 1
-
-                TowerPlacing = False
-
-            End If
+        Coins -= 30
+        TowerCount += 1
+        TowerPlacing = False
 
     End Sub
 
     Public Sub CreateUpgradeSlots(Slot() As PictureBox, LocationX As Integer, LocationY As Integer)
 
         Slot(TowerCount) = New PictureBox With {
-            .Size = New Size(21, 11),
-            .BackColor = Color.White,
-            .Location = New Point(LocationX, LocationY)
+    .Size = New Size(21, 11),
+    .BackColor = Color.White,
+    .Location = New Point(LocationX, LocationY)
             }
 
         TowerUI(TowerCount).Controls.Add(Slot(TowerCount))
@@ -471,26 +463,6 @@ Public Class CitadelClash
         TowerPlacing = False
         TowerIndicator.Hide()
         CancelPlacing.Hide()
-        TowerIndicatorUI.Stop()
-
-    End Sub
-
-    Private Sub TowerLogic_Tick(sender As Object, e As EventArgs) Handles TowerLogic.Tick
-
-        'Updates Tower Cap Label
-
-        LblTowerCapacity.Text = "Tower Capacity" & " " & TowerCount & "/25"
-
-
-        'For every tower find it a target and update this towers buff price label so that it holds the price of the next available upgrade
-
-        For counter = 0 To TowerCount - 1
-
-            currentTowers(counter).FindTarget()
-
-            currentTowers(counter).setLblBuffPrice(currentTowers(counter).getcurrentUpgrade)
-
-        Next
 
     End Sub
 
@@ -638,9 +610,7 @@ Public Class CitadelClash
         LeaderBoardDelay.Start()
 
     End Sub
-
     Private Sub LeaderBoardDelay_Tick(sender As Object, e As EventArgs) Handles LeaderBoardDelay.Tick
-
 
         'Hides Game over screen
         'Moves the leaderboard panel to cover the screen and stops the timer to prevent it from being shown once the next game has started
@@ -650,6 +620,7 @@ Public Class CitadelClash
         LeaderBoardPanel.Show()
         LeaderBoardPanel.BringToFront()
         LeaderBoardDelay.Stop()
+
 
     End Sub
 
@@ -664,42 +635,15 @@ Public Class CitadelClash
 
             newName.Hide()
             LblEnterUsername.Hide()
-            UserName = newName.Text
-            PlayerNames(5) = UserName
-            WavesReached(5) = Wave
 
-            'Insertion sorts the leaderboard with respect to waves reached
 
-            For counter = 1 To 5
+            With LeaderBoard
 
-                Dim tempName = PlayerNames(counter)
-                Dim tempWave = WavesReached(counter)
-                Dim index = counter
+                .setUserName(newName.Text)
+                .set5thPlayer(.getUserName, Wave)
+                .InsertionSortLeaderBoard()
 
-                While index > 0 AndAlso tempWave > WavesReached(index - 1)
-
-                    WavesReached(index) = WavesReached(index - 1)
-                    PlayerNames(index) = PlayerNames(index - 1)
-
-                    index = index - 1
-                End While
-
-                WavesReached(index) = tempWave
-                PlayerNames(index) = tempName
-
-            Next
-
-            'Sets each label to their associated playerName and waves reached for the first 5 positions and shows the leaderboard
-
-            For counter = 0 To 4
-
-                NameLabels(counter).Text = PlayerNames(counter)
-                NameLabels(counter).Show()
-
-                WaveReachedLabels(counter).Text = WavesReached(counter)
-                WaveReachedLabels(counter).Show()
-
-            Next
+            End With
 
             'Displays leaderbaord UI
 
@@ -728,16 +672,15 @@ Public Class CitadelClash
         newName.Text = Nothing
 
         For counter = 0 To 4
-            NameLabels(counter).Hide()
-            WaveReachedLabels(counter).Hide()
+            LeaderBoard.hideLabels(counter)
         Next
 
-
+        LeaderBoard.resetStats()
         'Resets player stats
 
-        Lives = 10
+        Lives = 0
         Coins = 60
-        Wave = 1
+        Wave = 15
 
 
         'Resets the game for enemies
@@ -807,29 +750,6 @@ Public Class CitadelClash
 
     End Sub
 
-    Public Sub InitializeLabels()
-
-        NameLabels(0) = LblName1
-        NameLabels(1) = LblName2
-        NameLabels(2) = LblName3
-        NameLabels(3) = LblName4
-        NameLabels(4) = LblName5
-
-        WaveReachedLabels(0) = LblWaveReached1
-        WaveReachedLabels(1) = LblWaveReached2
-        WaveReachedLabels(2) = LblWaveReached3
-        WaveReachedLabels(3) = LblWaveReached4
-        WaveReachedLabels(4) = LblWaveReached5
-
-        For counter = 0 To 4
-
-            NameLabels(counter).Text = PlayerNames(counter)
-            WaveReachedLabels(counter).Text = WavesReached(counter)
-
-        Next
-
-    End Sub
-
     Public Sub setLives(LivesLost As Integer)
 
         Lives -= LivesLost
@@ -842,23 +762,12 @@ Public Class CitadelClash
 
     End Sub
 
-    Public Sub settotalCoinsEarned(CoinsEarned As Integer)
-
-        TotalCoinsEarned += CoinsEarned
-
-    End Sub
-
     Public Sub setEnemiesKilledInWave(AmountKilled As Integer)
 
         EnemiesKilledInWave += AmountKilled
 
     End Sub
 
-    Public Sub setTotalEnemiesKilled(AmountKilled As Integer)
-
-        TotalEnemiesKilled += AmountKilled
-
-    End Sub
     Public Function getEnemies()
 
         Return Enemies
@@ -874,6 +783,12 @@ Public Class CitadelClash
     Public Function getWaveEnded()
 
         Return WaveEnded
+
+    End Function
+
+    Public Function getLeaderBoard()
+
+        Return LeaderBoard
 
     End Function
 

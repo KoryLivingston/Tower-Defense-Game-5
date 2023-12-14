@@ -34,7 +34,6 @@ Partial Class CitadelClash
         Me.WaveCompletionUI = New System.Windows.Forms.Timer(Me.components)
         Me.LblWaveCompleted = New System.Windows.Forms.Label()
         Me.NextWaveButton = New System.Windows.Forms.Button()
-        Me.TowerIndicatorUI = New System.Windows.Forms.Timer(Me.components)
         Me.TowerLogic = New System.Windows.Forms.Timer(Me.components)
         Me.TowerShooting = New System.Windows.Forms.Timer(Me.components)
         Me.LblTower1Cost = New System.Windows.Forms.Label()
@@ -217,10 +216,6 @@ Partial Class CitadelClash
         Me.NextWaveButton.Text = "NEXTWAVE"
         Me.NextWaveButton.UseVisualStyleBackColor = False
         Me.NextWaveButton.Visible = False
-        '
-        'TowerIndicatorUI
-        '
-        Me.TowerIndicatorUI.Interval = 1
         '
         'TowerLogic
         '
@@ -824,7 +819,6 @@ Partial Class CitadelClash
     Friend WithEvents PictureBox7 As PictureBox
     Friend WithEvents PictureBox8 As PictureBox
     Friend WithEvents TowerIndicator As PictureBox
-    Friend WithEvents TowerIndicatorUI As Timer
     Friend WithEvents TowerLogic As Timer
     Friend WithEvents TowerShooting As Timer
     Friend WithEvents LblTower1Cost As Label

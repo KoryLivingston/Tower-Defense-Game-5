@@ -3,16 +3,14 @@ Public Class Tower
 
     Private TowerGraphic As PictureBox
     Private TargetEnemy As Enemy
-    Private Range As Integer
     Private damage As Integer
-
     Private TowerUI As Panel
     Private LblBuffPrice As Label
     Private UpgradeSlots(2) As PictureBox
     Private BuffPrice As Integer
     Private CurrentUpgrade As Integer
 
-    Public Sub New(Graphic As PictureBox, TowerUI As Panel, LblBuffPrice As Label, UpgradeSlots1 As PictureBox, upgradeSlots2 As PictureBox, UpgradeSlots3 As PictureBox, Range As Integer, Damage As Integer, BuffPrice As Integer)
+    Public Sub New(Graphic As PictureBox, TowerUI As Panel, LblBuffPrice As Label, UpgradeSlots1 As PictureBox, upgradeSlots2 As PictureBox, UpgradeSlots3 As PictureBox, Damage As Integer, BuffPrice As Integer)
 
         TowerGraphic = Graphic
         UpgradeSlots(0) = UpgradeSlots1
@@ -26,7 +24,6 @@ Public Class Tower
             .TowerUI = TowerUI
             .LblBuffPrice = LblBuffPrice
             .LblBuffPrice.Text = BuffPrice & " COINS"
-            .Range = Range
             .damage = Damage
             .BuffPrice = BuffPrice
 
@@ -92,12 +89,14 @@ Public Class Tower
 
                     TargetEnemy.getEnemyGraphic.Top -= 1000
                     .setEnemiesKilledInWave(1)
-                    .setTotalEnemiesKilled(1)
+                    .getLeaderBoard.setTotalEnemiesKilled()
+
                     .setCoins(TargetEnemy.getCoinsDropped)
-                    .settotalCoinsEarned(TargetEnemy.getCoinsDropped)
+                    .getLeaderBoard.setTotalCoinsEarned(TargetEnemy.getCoinsDropped)
 
                     TargetEnemy.setIsdead(True)
                     TargetEnemy = Nothing
+
 
                 End If
             End If
@@ -124,7 +123,7 @@ Public Class Tower
 
 
         Return Enemy.getEnemyGraphic.Location.X >= 20 And
-    distance <= Range
+    distance <= 160
 
     End Function
 
